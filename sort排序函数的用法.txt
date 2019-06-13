@@ -1,0 +1,24 @@
+sort函数有三种用法：
+一.对基本类型的数组从小到大排序
+   sort(数组名+n1,数组名+n2);
+   将数组中的下标从n1到n2的元素进行从大到小排序，不包括n2。通过n1，n2可以对整个或部分数组排序；
+二.对元素类型为T的基本类型数组从小到大排序
+   sort(数组名+n1,数组名+n2,greater<T>());
+   T对应各种元素类型，将数组中的下标从n1到n2的元素进行从大到小排序，不包括n2。通过n1，n2可以对整个或者部分数组排序；
+三.第三种自定义排序规则
+   sort(数组名+n1，数组名+n2,排序规则结构名）；
+   排序规则结构体定义：
+   struct 结构名{
+      bool operator (const T&a1,const T &a2)
+      {
+         return ;
+       }
+    };
+    例如：
+    struct Rule1{
+    bool operator()(const int &a1,const int a2)
+    {
+       return (a1%10)<(a2%10);
+    }
+    };
+    调用时sort(a,a+sizeof(a)/sizeof(int),Rule1());
