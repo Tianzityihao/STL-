@@ -1,0 +1,75 @@
+<sstream>定义了三个类：istringstream,ostringstream,stringstream，分别来进行流的输入、输出和输入输入输出操作。
+<sstream>主要用来进行数据类型转换，由于<sstream>使用string对象来代替字符数组，就避免了缓冲区的溢出的危险；而且，
+因为传入参数和目标对象的类型会被自动推导出来，所以不存在错误的格式化符的问题。简单说，相比C库的数据类型转换而言，<sstream>
+更加安全、自动和直接。
+1.数据类型转换
+#include <string>
+#include <sstream>
+#include <iostream>
+#include <stdio.h>
+using namespace std;
+int main()
+{
+    stringstream sstream;
+    string strResult;
+    int nValue = 1000;
+    // 将int类型的值放入输入流中
+    sstream << nValue;
+    // 从sstream中抽取前面插入的int类型的值，赋给string类型
+    sstream >> strResult;
+    cout << "[cout]strResult is: " << strResult << endl;
+    printf("[printf]strResult is: %s\n", strResult.c_str());
+    return 0;
+}
+输出：1000   1000
+2.多个字符拼接
+本示例介绍在 stringstream 中存放多个字符串，实现多个字符串拼接的目的（其实完全可以使用 string 类实现），同时，介绍 stringstream 的清空方法。
+示例代码（stringstream_test2.cpp）如下：
+#include <string>
+#include <sstream>
+#include <iostream>
+using namespace std; 
+int main()
+{
+    stringstream sstream;
+    // 将多个字符串放入 sstream 中
+    sstream << "first" << " " << "string,";
+    sstream << " second string";
+    cout << "strResult is: " << sstream.str() << endl;
+    // 清空 sstream
+    sstream.str("");
+    sstream << "third string";
+    cout << "After clear, strResult is: " << sstream.str() << endl;
+    return 0;
+}
+输出： strResult is:first string ,second string     After clear,strResult is:third string
+从上述代码执行结果能够知道：
+可以使用 str() 方法，将 stringstream 类型转换为 string 类型；
+可以将多个字符串放入 stringstream 中，实现字符串的拼接目的；
+如果想清空 stringstream，必须使用 sstream.str(""); 方式；clear() 方法适用于进行多次数据类型转换的场景。详见示例3。
+3.stringstream的清空
+清空 stringstream 有两种方法：clear() 方法以及 str("") 方法，这两种方法有不同的使用场景。str("") 方法的使用场景，在上面的示例中已经介绍了，这里介绍 clear() 方法的使用场景。示例代码（stringstream_test3.cpp）如下：
+
+#include <sstream>
+#include <iostream>
+using namespace std;
+int main()
+{
+    stringstream sstream;
+    int first, second;
+    // 插入字符串
+    sstream << "456";
+    // 转换为int类型
+    sstream >> first;
+    cout << first << endl;
+    // 在进行多次类型转换前，必须先运行clear()
+    sstream.clear();
+    // 插入bool值
+    sstream << true;
+    // 转换为int类型
+    sstream >> second;
+    cout << second << endl;
+    return 0;
+}
+编译并执行上述代码，结果如下：456  1
+注意：在本示例涉及的场景下（多次数据类型转换），必须使用 clear() 方法清空 stringstream，不使用 clear() 方法或使用 str("") 方法，都不能得到数据类型转换的正确结果。下图分别是未使用 clear() 方法、使用 str("") 方法时的运行结果：
