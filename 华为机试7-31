@@ -1,0 +1,130 @@
+1.小明是个有强迫症的卖家，他手头上有10000台设备，他想以他的幸运数字D元（D是个浮点数）每台的价格批量卖一些出去，他不在乎能卖出去多少台，只在乎卖出去的每台
+均价接近D元，而且他只收整数数额的钱，请你编程计算他应该每次卖出去的台数N,一共售价M。
+输入描述：
+        输入一个浮点数D(0<D<10),精确到小数点后14位，表明小明钟情的价格。
+输出描述：
+        输出两个整数M,N以空格分割，
+        如果有多种方案均价一样，输出台数最小的那个。
+    示例1.
+         输入   0.50000000000000
+         输出   1 2
+    示例2.
+         输入   3.14159265358979
+         输出   355 113
+         说明
+                . . .
+                356.0/113=3.140442477876106
+                355.0/113=3.14159929203539825
+                354.0/113=3.1327433628318584
+                . . . 
+                第二个数最接近给出的这个数，所以为最佳答
+#include<iostream>
+#include<string>
+#include<algorithm>
+using namespace std;
+int main()
+{
+	double price = 0;
+	int N,M,j=0;
+	string str;
+	cin >> str;
+	price =stod(str);
+	double error= price;
+	double errorCur = price;
+	for (int i = 1; i < 10001; ++i)
+	{
+		int numberCur = price*i;
+		errorCur = min(fabs(price*i - numberCur), fabs(price*i - numberCur - 1));
+		if (error>errorCur)
+		{
+			error = errorCur;
+			N = i;
+			if (fabs(price*i - numberCur) > fabs(price*i - numberCur - 1))
+				M = numberCur+1;
+			else
+				M = numberCur;
+		}
+	}
+	cout<<M<<" "<<N<<endl;
+	return 0;
+}
+要点：1.double为双精度型，可精确到小数点后16位，但%f输出小数点后6位，%.16lf才能输出小数点后16位
+     2.string型字符串转化成double型用stod(str)，str为string型的字符串名字，需包含头文件<string>.
+     3.fabs()为绝对值函数，返回值为double型，abs()也是绝对值函数，返回值为int型,包含头文件<algorithm>
+     4.思路是先找D的证书倍的最近的两个整数，离D*i最近的整数满足，记录小数部分离取得的整数最小的值和与其对应的i，这时取得的最近的整数和i，就是M，N
+2.给字符定义一个“旋转”的操作，比如字符串Abcd旋转一次变成bcDA，继续旋转则依次变成cDAb、DAbc、AbcD。给定两个字符串“源”和“目标”.请判断“源”在旋转一定
+  的次数后，是否可以包含“目标”.
+  输入描述：
+      三个长度非空字符串，一共6行，奇数行为“源”字符串，偶数行为“目标”字符串
+  输出描述：
+      每组字符串是否可以旋转包含。包含返回1，不包含返回0；
+  示例1.
+      输入
+      AABCD
+      CDAA
+      AABCD
+      ABCD
+      AABCD
+      CFS
+      输出
+      110
+#include<stdio.h>
+#include<iostream>
+#include<string>
+using namespace std;
+int main()
+{
+	string str[6];
+	string::size_type idx;
+	int number[3] = { 0, 0, 0 };
+	int k = 0;
+	cin >> str[0] >> str[1] >> str[2] >> str[3] >> str[4] >> str[5];
+	for (int i = 0; i < 5; i=i+2)
+	{
+		int len = str[i].size();
+		for (int j = 0; j < len; ++j)
+		{
+			idx = str[i].find(str[i + 1]);
+			if (idx != string::npos)
+			{
+				number[k] = 1;
+				break;
+			}
+				char a = str[i][j];
+				str[i][j] = 0;
+				str[i] += a;
+		}
+		k++;
+		idx = string::npos;
+	}
+	printf("%d%d%d", number[0], number[1], number[2]);
+		return 0;
+}
+注意：1.查找一个字符串a中是否含有另一个字符串b，用a.find(b)，定义一个idx=string::npos，如果返回值为string：：npos说明不含b，如果含，则返回
+        b的首字符的位置.
+      2.本题的思路是，循环字符串a,每次把第j个位置的字符取出，并把字符放到末位，取出的位置置零，判断新字符是否含有字符串b。
+3.拓扑图由顶点和边构成，如果拓扑图中从某个顶点出发，不走回头路的情况下，可以回到出发点，我们称之为环，要求通过删除某些边消除拓扑图的环。
+     输入描述：
+         输入第一行包括一个整数N（1<=N<=100）,表示顶点个数。输入第二行包括一个整数M(1<=M<=1000),表示边个数。接下来的M行每行包括起始顶点，边名称，
+         边长度，使用，分隔。
+     输出描述：
+         输出需要删除的边的名称，按名称排序，要求删除边的总长度最小。每条边输出一行，以换行结尾。如果没有需要输出的边，输出#。
+      示例1.
+          输入
+             6
+             8
+             A1,A2,A12,1
+             A2,A3,A23,2
+             A3,A4,A34,3
+             A4,A5,A45,4
+             A5,A2,A52,5
+             A5,A3,A53,6
+             A5,A3,A53X,2
+             A5,A6,A56,7
+          输出
+             A34
+          备注：
+             两个顶点间可能存在多条边
+       
+  
+         
